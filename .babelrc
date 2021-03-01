@@ -1,0 +1,15 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env", {
+        "targets": {
+          "node": "12.16.1"
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "lodash",
+    "@babel/plugin-proposal-class-properties"
+  ]
+}

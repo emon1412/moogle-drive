@@ -1,0 +1,91 @@
+service: moogle-drive-api
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-west-2
+  deploymentBucket:
+    name: <YOUR_DEPLOYMENT_BUCKET_NAME>
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+      - 'lambda:InvokeFunction'
+      Resource:
+      - "*"
+    - Effect: 'Allow'
+      Action:
+      - "s3:GetObject"
+      Resource: arn:aws:s3:::<YOUR_FILES_STORE_BUCKET_NAME>/*
+
+plugins:
+  - serverless-webpack
+  - serverless-prune-plugin
+  - serverless-plugin-tracing
+  - serverless-offline
+
+package:
+  individually: true
+
+functions:
+  mainEntry:
+    handler: src/entryPoints/mainEntryPoint.handler
+    timeout: 45
+    memorySize: 256
+    events:
+    - http: ANY /
+    - http: 'ANY {proxy+}'
+      cors:
+        maxAge: 600
+        headers: 
+        - Content-Type
+        - X-Amz-Date
+        - Authorization
+        - X-Api-Key
+        - X-Amz-Security-Token
+        - X-Amz-User-Agent
+        - ETag
+        - Cache-Control
+        allowCredentials: false
+      request:
+        passThrough: WHEN_NO_TEMPLATES
+        template:
+          application/json: '{\n    \"body\": $input.json(\"$\")\n}'
+        parameters:
+          headers:
+            x-verb-test: false
+            x-verb-correlation: false
+            Authorization: true
+resources:
+  Resources:
+    StoreBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: <YOUR_FILES_STORE_BUCKET_NAME>
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+              - GET
+              - HEAD
+              - PUT
+              - POST
+              - DELETE
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
+custom:
+  corsHeaders:
+    - Content-Type
+    - X-Amz-Date
+    - Authorization
+    - X-Api-Key
+    - X-Amz-Security-Token
+    - X-Amz-User-Agent
+    - ETag
+    - Cache-Control
+  customCORSMaxAge: 600 # 10 minutes (Known max values=> Firefox: 24 hour limit, Chrome: 10 minute)
+  webpack:
+    includeModules: true   # Node modules configuration for packaging
+    packager: 'npm'   # Reserved for future use. Any other values will not work right now.
+  serverless-offline:
+    port: 8085

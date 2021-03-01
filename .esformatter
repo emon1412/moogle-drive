@@ -1,0 +1,21 @@
+{
+  "plugins": [
+    "esformatter-dot-notation",
+    "esformatter-quotes",
+    "esformatter-ignore",
+    "esformatter-remove-trailing-commas",
+    "esformatter-semicolons"
+  ],
+  "quotes": {
+    "type": "single",
+    "avoidEscape": true
+  },
+  "indent": {
+    "value": "  "
+  },
+  "whiteSpace": {
+    "before": {
+      "IfStatementConditionalOpening": 0
+    }
+  }
+}

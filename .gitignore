@@ -1,0 +1,13 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+.webpack
+
+/config/default.json
+
+/yarn-error.log
+
+serverless.yaml

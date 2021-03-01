@@ -1,0 +1,10 @@
+{
+  "webUrl": "",
+  "MongoDBConnectionString": "",
+  "filesBucket": "",
+  "dbName": "",
+  "Algolia": {
+    "AppID": "",
+    "APIKey": ""
+  }
+}
